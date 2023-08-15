@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  name: Set cluster level motd
+  vars:
+   netapp_hostname: 192.168.0.101
+   netapp_username: admin
+   netapp_password: Netapp1!
+  tasks:
+  - name: set banner
+    na_ontap_motd:
+     vserver: cluster1
+     message: "Cluster wide MOTD set Ansible playbook"
+     hostname: "{{ netapp_hostname }}"
+     username: "{{ netapp_username }}"
+     password: "{{ netapp_password }}"
+     state: absent
+     https: true
+     validate_certs: false

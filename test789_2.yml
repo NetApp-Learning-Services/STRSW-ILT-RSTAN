@@ -1,0 +1,47 @@
+---
+#!/usr/bin/env ansible-playbook
+#########################################
+#
+# Title: test456_2.yml
+# Description: Create two users
+#              Delete two users
+#########################################
+- hosts: localhost
+  gather_facts: false
+  name: user module
+  vars:
+    input: &input
+      hostname: "cluster1.demo.netapp.com"
+      username: "admin"
+      password: "Netapp1!"
+      https: true
+      validate_certs: false
+  collections:
+    - netapp.ontap
+  tasks:
+    - name: Create two users
+      na_ontap_user:
+        state: present
+        role_name: vsadmin
+        vserver: "nas_svm"
+        name: "{{item.name}}"
+        applications: http,ssh
+        authentication_method: password
+        set_password: "{{item.password}}"
+        <<: *input  
+      loop:
+        - { name: 'user1', password: 'password1'}
+        - { name: 'user2', password: 'password2'}
+
+    - name: Delete two users
+      na_ontap_user:
+        state: absent
+        vserver: "nas_svm"
+        name: "{{item.name}}"
+        applications: http,ssh
+        authentication_method: password
+        set_password: "{{item.password}}"
+        <<: *input  
+      loop:
+        - { name: 'user1', password: 'password1'}
+        - { name: 'user2', password: 'password2'}

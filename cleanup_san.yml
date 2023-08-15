@@ -1,0 +1,100 @@
+############################################
+# NetApp Learning Services / 2020
+# global/private vars are in global.yml
+# playbook specific vars are down below
+#############################################
+---
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+   global.yml
+  vars:
+    hostname: "{{ PRI_CLU }}"
+    username: "{{ PRI_CLU_USER }}"
+    password: "{{ PRI_CLU_PASS }}"
+    volname: "{{ VOL_NAME }}"
+    vserver: "{{ PRI_SVM }}"
+    aggr: "{{ PRI_AGGR }}"
+    policy: Default
+    state: absent
+    https:          true
+    validate_certs: false
+  name: Delete and Unmap a LUN
+  
+  tasks:
+   - name: Disable iSCSI on primary SVM
+    na_ontap_iscsi:
+      state:                 absent
+      vserver:               "{{ PRI_SVM }}"
+      service_state:         stopped
+      <<: *input
+   - name: Delete LUN mapping
+     na_ontap_lun_map:
+       state: absent
+       initiator_group_name: "{{ IGROUP_NAME }}"
+       path: "/vol/{{ VOL_NAME }}/{{ LUN_NAME }}"
+       vserver: "{{ PRI_SVM }}"
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+     with_items:
+       "{{ luns }}"
+     when: luns != None
+   - name: Lun Delete
+     na_ontap_lun:
+       state: absent
+       name: "{{ LUN_NAME }}"
+       flexvol_name: "{{ VOL_NAME }}"
+       vserver: "{{ PRI_SVM }}"
+       size: "{{ LUN_SIZE }}"
+       size_unit: gb
+       ostype: windows
+       space_reserve: false
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+     with_items:
+       "{{ luns }}"
+     when: luns != None
+   - name: Delete iGroup
+     na_ontap_igroup:
+       state: absent
+       name: "{{ IGROUP_NAME }}"
+       vserver: "{{ PRI_SVM }}"
+       initiator_group_type: iscsi
+       ostype: windows
+       initiator: "{{ WIN_IQN }}"
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+     with_items:
+       "{{ igroups }}"
+     when: igroups != None
+   - name: Delete volume
+     na_ontap_volume:
+       state: absent
+       name: "{{ VOL_NAME }}"
+       aggregate_name: "{{ PRI_AGGR }}"
+       size: "{{ VOL_SIZE }}"
+       size_unit: gb
+       space_guarantee: none
+       vserver: "{{ PRI_SVM }}"
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+     with_items:
+       "{{ luns }}"
+   
+   
+   
+   
+   
+   

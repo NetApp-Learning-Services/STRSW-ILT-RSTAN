@@ -1,0 +1,119 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: NetApp cluster2 System Setup
+  vars:
+    login: &login
+     hostname: 192.168.0.102                                      # NetApp Cluster IP
+     username: admin                                              # Cluster User
+     password: Netapp1!                                           # Cluster Password
+     https: true
+     validate_certs: false
+  vars_files:
+   - var_nfs.yml
+  tasks:
+  - name: Create and Online New Data Aggregate's
+    na_ontap_aggregate:
+      state: present
+      service_state: online
+      nodes: "{{ item.node }}"
+      name: "{{ item.name }}"
+      disk_count: "{{ item.diskcount }}"
+      wait_for_online: true
+      time_out: 300
+      <<: *login
+    with_items: "{{ aggr }}"
+  - name: Create Vserver
+    na_ontap_svm:
+      state: present
+      name: "{{ item.name }}"
+      root_volume: "{{ item.rootvol }}"
+      root_volume_aggregate: "{{ item.rootaggr }}"
+      aggr_list: "{{ item.aggr_list }}"
+      allowed_protocols: "{{ item.allowed_protocols }}"
+      <<: *login
+    with_items: "{{ svm }}"
+  - name: Create Subnet
+    na_ontap_net_subnet:
+      state: present
+      name: "{{ subnetname }}"
+      subnet: "{{ subnetnetwork }}"
+      ip_ranges: "{{ subnetiprange }}"
+      ipspace: Default
+      broadcast_domain: Default
+      <<: *login
+  - name: Create NFS LIF Node1
+    na_ontap_interface:
+      state: present
+      interface_name: "{{ item.name }}"
+      home_port: "{{ item.home }}"
+      home_node: "{{ item.node }}"
+      role: data
+      protocols: nfs
+      admin_status: up
+      failover_policy: system-defined
+      firewall_policy: data
+      is_auto_revert: true
+      subnet_name: "{{ subnetname }}"
+      force_subnet_association: false
+      dns_domain_name: test.com
+      vserver: "{{ item.vserver }}"
+      <<: *login
+    with_items: "{{ lif }}"     
+  - name: Start NFS
+    na_ontap_nfs:
+      state: present
+      service_state: started
+      vserver: "{{ item.name }}"
+      nfsv3: enabled
+      <<: *login
+    with_items: "{{ svm }}"
+  - name: Create NFS Export Rule Under Default Policy
+    na_ontap_export_policy_rule:
+      state: present
+      name: default
+      vserver: "{{ item.name }}"
+      client_match: "{{ nfsclientmatchsubnet }}"
+      ro_rule: sys
+      rw_rule: sys
+      protocol: nfs
+      super_user_security: any
+      <<: *login
+    with_items: "{{ svm }}"  
+  - name: Add DNS Settings to SVM
+    na_ontap_dns:
+      state: present
+      vserver: "{{ item.name }}"
+      domains: "{{ item.domain }}"
+      nameservers: "{{ item.dns_servers }}"
+      skip_validation: true
+      <<: *login
+    with_items: "{{ svm }}"
+- hosts: localhost
+  name: Volume Action
+  vars:
+    hostname: 192.168.0.102
+    username: admin
+    password: Netapp1!
+    vserver: VServer2
+    aggr: aggr20
+    vol_name: Vol2
+    policy: ansible
+  tasks:
+  - name: Volume Create
+    na_ontap_volume:
+      state: present
+      name: "{{ vol_name }}"
+      vserver: "{{ vserver }}"
+      aggregate_name: "{{ aggr }}"
+      size: 10
+      size_unit: gb
+      policy: "{{ policy }}"
+      junction_path: "/{{ vol_name }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      space_guarantee: none
+      volume_security_style: unix
+      https: true
+      validate_certs: false

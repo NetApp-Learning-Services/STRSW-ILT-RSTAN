@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: Setup ONTAP
+  vars:
+    vserver: svm1
+    login: &login
+     hostname: 192.168.0.101 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  vars_files:
+   - var_cluster1.yml
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      <<: *login
+    register: netapp
+  - name: remove vols
+    na_ontap_volume:
+      state: absent
+      name:  "{{ netapp.ontap_info.volume_info[item].volume_id_attributes.name }}"
+      vserver: "{{ vserver }}"
+      <<: *login
+    with_items: "{{ netapp.ontap_info.volume_info }}"
+    when:
+    - netapp.ontap_info.volume_info[item].volume_id_attributes.owning_vserver_name == "{{ vserver }}"
+    - not (netapp.ontap_info.volume_info[item].volume_id_attributes.name).endswith('root')
+    ignore_errors: yes

@@ -1,0 +1,147 @@
+#!/usr/bin/env ansible-playbook
+
+################################################################################
+#
+# Title:        create_san_all.yml 
+# Author:       Ronald Feist
+# Date:         2020-06-09
+# Description:  Create a primary SVM for SAN, and all components
+#               with Ansible modules
+#
+# Modules:      na_ontap_svm, na_ontap_iscsi, na_ontap_interface, na_ontap_lun,
+#               na_ontap_igroup, na_ontap_lun_map
+#
+# URLs:         http://docs.netapp.com/ontap-9/index.jsp
+#               https://galaxy.ansible.com/netapp/ontap
+#
+# Built-in help:
+# ansible-doc netapp.ontap.na_ontap_svm
+#
+################################################################################
+
+- hosts: localhost
+  gather_facts: false
+  vars:
+    input: &input
+      hostname:       "{{ PRI_CLU }}"
+      username:       "{{ PRI_CLU_USER }}"
+      password:       "{{ PRI_CLU_PASS }}"
+      https:          true
+      validate_certs: false
+#      use_rest:       Always
+  vars_files:
+    - global.vars
+  collections:
+    - netapp.ontap
+
+  tasks:
+  - name: Create primary SVM
+    na_ontap_svm:
+      state:                 present
+      name:                  "{{ PRI_SVM }}"
+#      root_volume_aggregate: "{{ PRI_AGGR }}"
+      comment:               Created with Ansible
+      <<: *input
+  
+  - name: Enable iSCSI on primary SVM
+    na_ontap_iscsi:
+      state:                 present
+      vserver:               "{{ PRI_SVM }}"
+      service_state:         started
+      <<: *input
+  
+  - name: Create iSCSI interface for node01
+    na_ontap_interface:
+      state:                 present
+      interface_name:        "{{ PRI_SVM }}_iscsi_01"
+      vserver:               "{{ PRI_SVM }}"
+      address:               "{{ PRI_ISCSI_IP }}"
+      netmask:               "{{ PRI_SVM_NETMASK }}"
+      home_node:             "{{ PRI_CLU_NODE1 }}"
+      home_port:             "{{ PRI_DATA_PORT }}"
+      protocols:             iscsi
+      <<: *input
+      firewall_policy:       data
+      role:                  data
+  
+  - name: Create iSCSI interfaces for node02
+    na_ontap_interface:
+      state:                 present
+      interface_name:        "{{ PRI_SVM }}_iscsi_02"
+      vserver:               "{{ PRI_SVM }}"
+      address:               "{{ SEC_ISCSI_IP }}"
+      netmask:               "{{ PRI_SVM_NETMASK }}"
+      home_node:             "{{ PRI_CLU_NODE2 }}"
+      home_port:             "{{ PRI_DATA_PORT }}"
+      protocols:             iscsi
+      <<: *input
+      firewall_policy:       data
+      role:                  data
+  
+  - name: Create iGroup
+    na_ontap_igroup:
+       state: present
+       name: "{{ IGROUP_NAME }}"
+       vserver: "{{ PRI_SVM }}"
+       initiator_group_type: iscsi
+       ostype: windows
+       initiator: "{{ WIN_IQN }}"
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+    with_items:
+       "{{ igroups }}"
+    when: igroups != None
+   
+  - name: Create volume
+    na_ontap_volume:
+       state: present
+       name: "{{ VOL_NAME }}"
+       aggregate_name: "{{ PRI_AGGR }}"
+       size: "{{ VOL_SIZE }}"
+       size_unit: gb
+       space_guarantee: none
+       vserver: "{{ PRI_SVM }}"
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+    with_items:
+       "{{ luns }}"
+   
+  - name: Lun Create
+    na_ontap_lun:
+       state: present
+       name: "{{ LUN_NAME }}"
+       flexvol_name: "{{ VOL_NAME }}"
+       vserver: "{{ PRI_SVM }}"
+       size: "{{ LUN_SIZE }}"
+       size_unit: gb
+       ostype: windows
+       space_reserve: false
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+    with_items:
+       "{{ luns }}"
+    when: luns != None
+   
+  - name: Create LUN mapping
+    na_ontap_lun_map:
+       state: present
+       initiator_group_name: "{{ IGROUP_NAME }}"
+       path: "/vol/{{ VOL_NAME }}/{{ LUN_NAME }}"
+       vserver: "{{ PRI_SVM }}"
+       hostname: "{{ PRI_CLU }}"
+       username: "{{ PRI_CLU_USER }}"
+       password: "{{ PRI_CLU_PASS }}"
+       https: true
+       validate_certs: false
+    with_items:
+       "{{ luns }}"
+    when: luns != None

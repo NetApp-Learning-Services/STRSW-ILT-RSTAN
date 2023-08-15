@@ -1,0 +1,22 @@
+---
+- hosts: servers
+  vars:
+    hostname: 192.168.0.101
+    username: admin
+    password: Netapp1!
+    vserver: svm1
+    aggr: aggr1
+    vol_name: ansibleVol
+    export_policy: ansible
+    nfs_lif : 192.168.0.131
+  tasks:
+  - name: Creates directory
+    file:
+     path: "/mnt/{{ vol_name }}"
+     state: directory
+  - name: mount
+    mount:
+     name: "/mnt/{{ vol_name }}"
+     src: "{{ nfs_lif }}:/{{ vol_name }}"
+     fstype: nfs
+     state: mounted

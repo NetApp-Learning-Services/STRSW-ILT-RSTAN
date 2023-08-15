@@ -1,0 +1,34 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: Setup ONTAP
+  vars:
+    login: &login
+     hostname: 192.168.0.101 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  vars_files:
+   - var_cluster1.yml
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      <<: *login
+    register: netapp
+  - name: Create Volume
+    na_ontap_volume:
+      state: present
+      name: fact_test
+      vserver: svm1
+      aggregate_name: "{{ item }}"
+      size: 10
+      size_unit: gb
+      <<: *login
+    register: result
+    with_items: "{{ netapp.ontap_info.aggregate_info }}"
+    when:
+    - "{{ netapp.ontap_info.aggregate_info[item].aggr_space_attributes.size_available | int / 1024 / 1024 / 1024}} > 10"
+    - not item.startswith("aggr0")
+    ignore_errors: yes

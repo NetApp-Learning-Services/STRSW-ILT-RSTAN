@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: NetApp Cluster1 System Setup
+  vars:
+    login: &login
+     hostname: 192.168.0.101 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  vars_files:
+   - var_cluster1.yml
+  tasks:
+  - name: Install Licenses
+    na_ontap_cluster:
+      state: present
+      license_code: "{{ item }}"
+      <<: *login
+    with_items: "{{ licenses }}"
+  - name: Set NTP
+    na_ontap_ntp:
+      state: present
+      version: auto
+      server_name: "{{ ntpservers }}"
+      <<: *login
+  - name: Set Timezone
+    na_ontap_command:
+      command: ['time', '-timezone', 'Europe/Brussels']
+      privilege: admin
+      <<: *login

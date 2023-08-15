@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  name: Volume Action
+  vars:
+    hostname: 192.168.0.101
+    username: admin
+    password: Netapp1!
+    vserver: svm1
+    aggr: aggr1_cluster1_01_data
+    vol_name: ansibleVol
+    policy: ansible
+  tasks:
+  - name: Volume Create
+    na_ontap_volume:
+      state: present
+      name: "{{ vol_name }}"
+      vserver: "{{ vserver }}"
+      aggregate_name: "{{ aggr }}"
+      size: 10
+      size_unit: gb
+      policy: "{{ policy }}"
+      junction_path: "/{{ vol_name }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      space_guarantee: none
+      volume_security_style: unix
+      https: true
+      validate_certs: false

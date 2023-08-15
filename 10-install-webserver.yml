@@ -1,0 +1,60 @@
+---
+- hosts: localhost
+  name: Volume Action
+  vars:
+    hostname: 192.168.0.101
+    username: admin
+    password: Netapp1!
+    vserver: svm1
+    aggr: aggr1_cluster1_01_data
+    vol_name: webvol
+    policy: ansible
+  tasks:
+  - name: Volume Create
+    na_ontap_volume:
+      state: present
+      name: "{{ vol_name }}"
+      vserver: "{{ vserver }}"
+      aggregate_name: "{{ aggr }}"
+      size: 10
+      size_unit: gb
+      policy: "{{ policy }}"
+      junction_path: "/{{ vol_name }}"
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      space_guarantee: none
+      volume_security_style: unix
+      https: true
+      validate_certs: false
+- hosts: nginx
+  become: true
+  vars:
+    packages:
+     - epel-release
+     - nginx
+    vol_name: webvol
+    nfs_lif : 192.168.0.131  
+  tasks:
+  - name: Add epel-release repo and install nginx
+    yum:
+     name: "{{ packages }}"
+     state: latest
+  - name: mount
+    mount:
+     name: /usr/share/nginx/html/
+     src: "{{ nfs_lif }}:/{{ vol_name }}"
+     fstype: nfs
+     state: mounted
+  - name: Insert HTML Workshop Index Page
+    template:
+      src: index.html
+      dest: /usr/share/nginx/html/index.html
+  - name: Update NGiNGX Config to use port 8080
+    template:
+      src: nginx.conf
+      dest: /etc/nginx/nginx.conf
+  - name: Start NGiNX
+    service:
+      name: nginx
+      state: started

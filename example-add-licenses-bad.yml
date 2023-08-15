@@ -1,0 +1,42 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: NetApp add licenses on cluster1
+  vars:
+    login: &login
+     hostname: 192.168.0.101 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  tasks:
+  - name: Install Licenses
+    na_ontap_cluster:
+      state: present
+      license_code: YRUMQKDBHKPKICAAAAAAAAAAAAAA
+      <<: *login
+  - name: Install Licenses
+    na_ontap_cluster:
+      state: present
+      license_code: KMSBRKDBHKPKICAAAAAAAAAAAAAA
+      <<: *login
+  - name: Install Licenses
+    na_ontap_cluster:
+      state: present
+      license_code: WGQQRKDBHKPKICAAAAAAAAAAAAAA
+      <<: *login
+  - name: Install Licenses
+    na_ontap_cluster:
+      state: present
+      license_code: IBOFSKDBHKPKICAAAAAAAAAAAAAA
+      <<: *login
+  - name: Install Licenses
+    na_ontap_cluster:
+      state: present
+      license_code: GQJJTKDBHKPKICAAAAAAAAAAAAAA
+      <<: *login
+  - name: Install Licenses
+    na_ontap_cluster:
+      state: present
+      license_code: SKHYTKDBHKPKICAAAAAAAAAAAAAA
+      <<: *login

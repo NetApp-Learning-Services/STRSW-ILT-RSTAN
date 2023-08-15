@@ -1,0 +1,52 @@
+clustername: cluster2 # Cluster Name
+node1name: cluster2-01
+ntpservers: 192.168.0.253 # Time Server
+
+peer_vserver: svm1
+peer_cluster: cluster1
+dst_ontap: 192.168.0.101
+
+aggr:
+ - name: aggr1_cluster2_01_data # New Data Aggregate name
+   node: cluster2-01
+   diskcount: 13 # Number of disks to add to the Data Aggregate
+svm:
+ - name: svm2
+   rootvol: svm2_root
+   rootaggr: aggr1_cluster2_01_data
+   aggr_list: aggr1_cluster2_01_data
+   allowed_protocols: nfs
+   dns_servers: 192.168.0.253
+   domain: demo.netapp.com
+lif:
+ - name: nfs_lif01
+   node: cluster2-01
+   vserver: svm2
+   ip_addr: 192.168.0.141
+   netmask: 255.255.255.0
+   home: e0c
+vols:
+ - name: vol1_svm2
+   size: 1
+   aggr: aggr1_cluster2_01_data
+   vserver: svm2
+   security_style: unix
+
+licenses:
+- YRUMQKDBHKPKICAAAAAAAAAAAAAA
+- KMSBRKDBHKPKICAAAAAAAAAAAAAA
+- WGQQRKDBHKPKICAAAAAAAAAAAAAA
+- IBOFSKDBHKPKICAAAAAAAAAAAAAA
+- GQJJTKDBHKPKICAAAAAAAAAAAAAA
+- SKHYTKDBHKPKICAAAAAAAAAAAAAA
+- EFFNUKDBHKPKICAAAAAAAAAAAAAA
+- QZCCVKDBHKPKICAAAAAAAAAAAAAA
+- CUARVKDBHKPKICAAAAAAAAAAAAAA
+- OOYFWKDBHKPKICAAAAAAAAAAAAAA
+   
+nfsclientmatchsubnet: 192.168.0.0/24 # Allow this subnet to access NFS
+nfsvolname: NFS_vol2 # First NFS Vol withint your SVM
+nfsvolsize: 1 # NFS Vol Size GB
+subnetname: Demo # NFS Subnet Name
+subnetnetwork: 192.168.0.0/24 # NFS Network Subnet
+subnetiprange: ["192.168.0.151-192.168.0.159"] # NFS LIF IP within the NFS subnet pool

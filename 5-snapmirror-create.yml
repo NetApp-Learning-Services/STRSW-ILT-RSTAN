@@ -1,0 +1,82 @@
+---
+- hosts: localhost
+  name: Snapmirror Create
+  gather_facts: false
+  vars:
+    src_ontap: 192.168.0.101
+    src_name: cluster1
+    src_lif: 192.168.0.120,192.168.0.121
+    src_vserver: svm1
+    src_volume: vol1
+    dst_volume: vol1_sm
+    dst_ontap: 192.168.0.102
+    dst_name: cluster2
+    dst_lif: 192.168.0.122
+    dst_aggr: aggr1_cluster2_01_data
+    dst_vserver: svm2
+    username: admin
+    password: Netapp1!
+    passphrase: Netapp123
+# tasks file for na_ontap_snapmirror_create
+  tasks:
+  - name: Create cluster peer
+    na_ontap_cluster_peer:
+      state: present
+      source_intercluster_lifs: "{{ src_lif }}"
+      dest_intercluster_lifs: "{{ dst_lif }}"
+      passphrase: "{{ passphrase }}"
+      hostname: "{{ src_ontap }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      dest_hostname: "{{ dst_ontap }}"
+      https: true
+      validate_certs: false
+  - name: sleep for 20 seconds and continue with play
+    wait_for:
+      timeout: 20
+    delegate_to: localhost
+  - name: Source vserver peer create
+    na_ontap_vserver_peer:
+      state: present
+      peer_vserver: "{{ dst_vserver }}"
+      peer_cluster: "{{ dst_name }}"
+      vserver: "{{ src_vserver }}"
+      applications: snapmirror
+      hostname: "{{ src_ontap }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      dest_hostname: "{{ dst_ontap }}"
+      https: true
+      validate_certs: false
+  - name: sleep for 20 seconds and continue with play
+    wait_for:
+      timeout: 20
+    delegate_to: localhost
+  - name: Validate destination FlexVol
+    na_ontap_volume:
+      state: present
+      name: "{{ dst_volume }}"
+      is_infinite: False
+      aggregate_name: "{{ dst_aggr }}"
+      size: 1
+      size_unit: gb
+      type: DP
+      #junction_path: "/{{ dst_volume }}"
+      vserver: "{{ dst_vserver }}"
+      hostname: "{{ dst_ontap }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+  - name: Create SnapMirror
+    na_ontap_snapmirror:
+      state: present
+      source_volume: "{{ src_volume }}"
+      destination_volume: "{{ dst_volume }}"
+      source_vserver: "{{ src_vserver }}"
+      destination_vserver: "{{ dst_vserver }}"
+      hostname: "{{ dst_ontap }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false

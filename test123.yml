@@ -1,0 +1,28 @@
+---
+#!/usr/bin/env ansible-playbook
+#########################################
+#
+# Title: test123.yml
+# Description: Create a user
+#
+#########################################
+- hosts: localhost
+  gather_facts: false
+  name: user module
+  collections:
+    - netapp.ontap
+  tasks:
+    - name: Create user
+      na_ontap_user:
+        state: present
+        name: test123
+        applications: http,ssh
+        authentication_method: password
+        set_password: bobdole1234566
+        hostname: "cluster1.demo.netapp.com"
+        role_name: vsadmin
+        vserver:  "nas_svm"
+        username: "admin"
+        password: "Netapp1!"
+        https: true
+        validate_certs: false

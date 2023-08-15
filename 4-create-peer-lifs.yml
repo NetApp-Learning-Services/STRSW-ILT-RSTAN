@@ -1,0 +1,51 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: Create Cluster Peer Lifs
+  vars:
+    login1: &login1
+     hostname: 192.168.0.101 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+    login2: &login2
+     hostname: 192.168.0.102 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  tasks:
+  - name: Create interface n1 cluster1
+    na_ontap_interface:
+     state: present
+     interface_name: peer-lif-n1
+     home_port: e0c
+     home_node: cluster1-02
+     role: intercluster
+     address: 192.168.0.120
+     netmask: 255.255.255.0
+     vserver: cluster1
+     <<: *login1
+  - name: Create interface n2 cluster1
+    na_ontap_interface:
+     state: present
+     interface_name: peer-lif-n2
+     home_port: e0c
+     home_node: cluster1-02
+     role: intercluster
+     address: 192.168.0.121
+     netmask: 255.255.255.0
+     vserver: cluster1
+     <<: *login1
+  - name: Create interface n1 cluster2
+    na_ontap_interface:
+     state: present
+     interface_name: peer-lif-n1
+     home_port: e0c
+     home_node: cluster2-01
+     role: intercluster
+     address: 192.168.0.122
+     netmask: 255.255.255.0
+     vserver: cluster2
+     <<: *login2

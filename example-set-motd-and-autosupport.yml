@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  name: Set cluster level motd and Autosupport settings on all nodes of cluster1 and cluster2
+  vars:
+   hostname:
+    - name: cluster1-01
+      cluster: cluster1
+      node: cluster1-01
+      ip: 192.168.0.101
+    - name: cluster1-02
+      cluster: cluster1
+      node: cluster1-02
+      ip: 192.168.0.101
+    - name: cluster2-01
+      cluster: cluster2
+      node: cluster2-01
+      ip: 192.168.0.102
+   login: &login
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  tasks:
+  - name: set banner
+    na_ontap_motd:
+     vserver: "{{ item.cluster }}"
+     message: "Cluster wide MOTD set Ansible playbook"
+     state: present
+     hostname: "{{item.ip }}"
+     <<: *login
+    with_items: "{{ hostname }}"
+  - name: Enable autosupport
+    na_ontap_autosupport:
+      state: present
+      node_name: "{{ item.node }}"
+      transport: https
+      noteto: abc@def.com,def@ghi.com
+      to_addresses: admin@customer.com
+      mail_hosts: 1.2.3.4,5.6.7.8
+      support: False
+      post_url: url/1.0/post
+      hostname: "{{ item.ip }}"
+      <<: *login
+    with_items: "{{ hostname }}"

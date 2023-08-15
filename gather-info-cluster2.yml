@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  name: Get Netapp info
+  vars:
+    login: &login
+     hostname: 192.168.0.102 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  tasks:
+  - name: gather info
+    na_ontap_info:
+      state: info
+      <<: *login
+    register: ontap_info
+  - debug:
+     msg: "{{ ontap_info.ontap_info }}"

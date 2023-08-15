@@ -1,0 +1,69 @@
+clustername: cluster1 # Cluster Name
+node1name: cluster1-01
+node2name: cluster1-02
+ntpservers: 192.168.0.253 # Time Server
+
+peer_vserver: svm2
+peer_cluster: cluster2
+dst_ontap: 192.168.0.102
+
+aggr:
+ - name: aggr1_cluster1_01_data
+   node: cluster1-01
+   diskcount: 13
+ - name: aggr1_cluster1_02_data
+   node: cluster1-02
+   diskcount: 13
+svm:
+ - name: svm1
+   rootvol: svm1_root
+   rootaggr: aggr1_cluster1_01_data
+   aggr_list: aggr1_cluster1_01_data
+   allowed_protocols: nfs
+   dns_servers: 192.168.0.253
+   domain: demo.netapp.com
+lif:
+ - name: nfs_lif01
+   ip_addr: 192.168.0.141
+   netmask: 255.255.255.0
+   node: cluster1-01
+   vserver: svm1
+   home: e0c
+ - name: nfs_lif02
+   ip_addr: 192.168.0.142
+   netmask: 255.255.255.0
+   node: cluster1-02
+   vserver: svm1
+   home: e0c
+vols:
+ - name: vol1
+   size: 1
+   aggr: aggr1_cluster1_01_data
+   vserver: svm1
+   security_style: unix
+ - name: vol2
+   size: 2
+   aggr: aggr1_cluster1_01_data
+   vserver: svm1
+   security_style: unix
+ - name: vol3
+   size: 3
+   aggr: aggr1_cluster1_01_data
+   vserver: svm1
+   security_style: unix
+licenses:
+- YRUMQKDBHKPKICAAAAAAAAAAAAAA
+- KMSBRKDBHKPKICAAAAAAAAAAAAAA
+- WGQQRKDBHKPKICAAAAAAAAAAAAAA
+- IBOFSKDBHKPKICAAAAAAAAAAAAAA
+- GQJJTKDBHKPKICAAAAAAAAAAAAAA
+- SKHYTKDBHKPKICAAAAAAAAAAAAAA
+- EFFNUKDBHKPKICAAAAAAAAAAAAAA
+- QZCCVKDBHKPKICAAAAAAAAAAAAAA
+- CUARVKDBHKPKICAAAAAAAAAAAAAA
+- OOYFWKDBHKPKICAAAAAAAAAAAAAA
+
+nfsclientmatchsubnet: 192.168.0.0/24 # Allow this subnet to access NFS
+subnetname: Demo # NFS Subnet Name
+subnetnetwork: 192.168.0.0/24 # NFS Network Subnet
+subnetiprange: ["192.168.0.131-192.168.0.149"] # NFS LIF IP within the NFS subnet pool

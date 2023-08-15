@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: Setup ONTAP
+  vars:
+    vserver: svm1
+    login: &login
+     hostname: 192.168.0.101 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+  tasks:
+  - name: Gather facts
+    na_ontap_info:
+      state: info
+      <<: *login
+    register: netapp
+  - name: remove lifs
+    na_ontap_interface:
+      state: absent
+      interface_name: "{{ netapp.ontap_info.net_interface_info[item].interface_name }}"
+      vserver: "{{ vserver }}"
+      <<: *login
+    #register: result
+    with_items: "{{ netapp.ontap_info.net_interface_info }}"
+    when:
+    - "{{ netapp.ontap_info.net_interface_info[item].vserver == vserver }}"
+    ignore_errors: yes

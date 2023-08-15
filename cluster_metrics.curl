@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+### Step 1 - Read in global variables
+GLOBAL_VARS=$(dirname $0)/global.vars
+eval "$(jq -r '. | to_entries | .[] | .key + "=\"" + .value + "\""' < $GLOBAL_VARS)"
+
+
+### Step 2 - Create HTTP headers
+TOKEN=$(echo -n "$PRI_CLU_USER:$PRI_CLU_PASS" | base64)
+HEAD_AUTH="authorization: Basic $TOKEN"
+HEAD_APP="accept: application/hal+json"
+
+
+### Step 3 - Get & print details
+# Cluster Metrics
+API="https://$PRI_CLU/api/cluster/metrics?fields=*"
+echo -e "--> calling $API"
+REST_RESPONSE=`curl -s \
+  -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
+
+echo -e "--> Printing Cluster Metrics"
+printf "%-20s %-15s %-10s %-30s\n" "Throughput" "IOPS" "Latency"
+echo -e $REST_RESPONSE | jq -r '.records[1] | [.throughput.total, .iops.total, .latency.total] | @tsv' |
+  while IFS=$'\t' read -r Throughput IOPS Latency; do
+    printf "%-20s %-15s %-15s\n" $Throughput $IOPS $Latency
+  done
+echo -e ""

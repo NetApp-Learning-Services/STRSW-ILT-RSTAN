@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+### Step 1 - Read in global variables
+GLOBAL_VARS=$(dirname $0)/global.vars
+eval "$(jq -r '. | to_entries | .[] | .key + "=\"" + .value + "\""' < $GLOBAL_VARS)"
+
+
+### Step 2 - Create HTTP headers
+TOKEN=$(echo -n "$PRI_CLU_USER:$PRI_CLU_PASS" | base64)
+HEAD_AUTH="authorization: Basic $TOKEN"
+HEAD_APP="accept: application/hal+json"
+
+
+### Step 3 - Get & print details
+# SVMs
+API="https://$PRI_CLU/api/svm/svms?fields=*"
+echo -e "--> calling $API"
+REST_RESPONSE=`curl -s \
+  -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
+
+echo -e "--> Printing SVM details"
+printf "%-20s %-15s %-10s %-30s\n" "Name" "IP Space" "State" "Comment"
+echo -e $REST_RESPONSE | jq -r '.records[] | [.name, .ipspace.name, .state, .comment] | @tsv' |
+  while IFS=$'\t' read -r NAME IPSPACE STATE COMMENT; do
+    printf "%-20s %-15s %-10s %-30s\n" $NAME $IPSPACE $STATE "$COMMENT"
+  done
+echo -e ""
+
+# Interfaces
+API="https://$PRI_CLU/api/network/ip/interfaces?scope=svm&fields=*"
+echo -e "--> calling $API"
+REST_RESPONSE=`curl -s \
+  -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
+
+echo -e "--> Printing network interface details"
+printf "%-20s %-25s %-20s %-15s\n" "SVM" "Name" "IP" "Current Port"
+echo -e $REST_RESPONSE | jq -r '.records[] | [.svm.name, .name, "\(.ip.address)/\(.ip.netmask)", "\(.location.node.name):\(.location.port.name)"] | @tsv' |
+  while IFS=$'\t' read -r SVM NAME IP PORT; do
+    printf "%-20s %-25s %-20s %-15s\n" $SVM $NAME $IP $PORT
+  done
+echo -e ""
+
+# iSCSI
+API="https://$PRI_CLU/api/protocols/san/iscsi/services?fields=*"
+echo -e "--> calling $API"
+REST_RESPONSE=`curl -s \
+  -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
+
+echo -e "--> Printing iSCSI details"
+printf "%-20s %-40s %-20s\n" "SVM" "UUID" "Enabled"
+echo $REST_RESPONSE | jq -r '.records[] | [.svm.name, .svm.uuid, .enabled] | @tsv' |
+  while IFS=$'\t' read -r SVM UUID ENABLED; do
+    printf "%-20s %-40s %-20s\n" $SVM $UUID $ENABLED
+  done
+echo -e ""
+
+# LUN Maps
+API="https://$PRI_CLU/api/protocols/san/lun-maps?fields=*"
+echo -e "--> calling $API"
+REST_RESPONSE=`curl -s \
+  -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
+
+echo -e "--> Printing LUN Map details"
+printf "%-20s %-20s %-20s %-20s\n" "SVM" "iGroup" "LUN" "OS Type"
+echo $REST_RESPONSE | jq -r '.records[] | [.svm.name, .igroup.name, .lun.name, .igroup.os_type] | @tsv' |
+  while IFS=$'\t' read -r SVM IGROUP LUN OS; do
+    printf "%-20s %-20s %-20s %-20s\n" $SVM $IGROUP $LUN $OS
+  done
+echo -e ""

@@ -1,0 +1,78 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: NetApp Cluster2 Cleanup
+  vars:
+    login: &login
+     hostname: 192.168.0.102 # NetApp Cluster IP
+     username: admin # Cluster User
+     password: Netapp1! # Cluster Password
+     https: true
+     validate_certs: false
+     use_rest: Always
+    clustername: cluster2 # Cluster Name
+    vols:
+    - vol1
+    - vol2
+    - vol3
+    - svm21_root
+    lif:
+    - name: svm21_cifs_nfs_lif1
+      vserver: svm21
+    - name: cluster2-01_iscsi_lif_1
+      vserver : svm21
+    - name: intercluster1
+      vserver : cluster2  
+    igroups:
+    - name: jumphost_igroup
+      initiators: iqn.1991-05.com.microsoft:jumphost.demo.netapp.com
+      ostype: windows
+      vserver: svm21
+    - name: rhel1_igroup
+      initiators: iqn.1994-05.com.redhat:rhel1.demo.netapp.com
+      ostype: linux
+      vserver: svm21
+  tasks:
+  - name: Delete LIF's
+    na_ontap_interface:
+      state: absent
+      interface_name: "{{ item.name }}"
+      role: data
+      vserver: "{{ item.vserver }}"
+      <<: *login
+    with_items: "{{ lif }}"
+  - name: Delete vols
+    na_ontap_volume:
+      state: absent
+      name: "{{ item }}"
+      vserver: "svm21"
+      wait_for_completion: true
+      <<: *login
+    loop: "{{ vols }}"
+  - name: Delete Igroups
+    na_ontap_igroup:
+      state: absent
+      name: "{{ item.name }}"
+      initiator_group_type: iscsi
+      ostype: "{{ item.ostype }}"
+      initiators: "{{ item.initiators }}"
+      vserver: "{{ item.vserver }}"
+      <<: *login
+    with_items: "{{ igroups }}"  
+  - name: Delete Data Aggregate
+    na_ontap_aggregate:
+      state: absent
+      service_state: online
+      name: "aggr1_cluster2_01"
+      <<: *login
+  - name: delete subnet
+    na_ontap_net_subnet:
+      state: absent
+      name: Demo
+      ipspace: Default
+      <<: *login
+  - name: Delete Vserver svm21
+    na_ontap_svm:
+      state: absent
+      name: "svm21"
+      <<: *login
