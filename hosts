@@ -1,0 +1,18 @@
+[ontap]
+192.168.0.101 shortname=cluster1
+192.168.0.102 shortname=cluster2
+
+[servers]
+192.168.0.62 shortname=centos2
+192.168.0.61 shortname=centos
+
+[nginx]
+192.168.0.61
+192.168.0.62
+
+[centos]
+192.168.0.61
+
+[centos2]
+192.168.0.62
+
