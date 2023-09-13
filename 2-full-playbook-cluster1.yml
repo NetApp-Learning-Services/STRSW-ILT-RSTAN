@@ -13,23 +13,6 @@
   vars_files:
    - var_cluster1.yml
   tasks:
-#  - name: Install Licenses
-#    na_ontap_cluster:
-#      state: present
-#      license_code: "{{ item }}"
-#      <<: *login
-#    with_items: "{{ licenses }}"
-  - name: Set NTP
-    na_ontap_ntp:
-      state: present
-      version: auto
-      server_name: "{{ ntpservers }}"
-      <<: *login
-  - name: Set Timezone
-    na_ontap_command:
-      command: ['time', '-timezone', 'Europe/Brussels']
-      privilege: admin
-      <<: *login
   - name: Create and Online New Data Aggregate Node1
     na_ontap_aggregate:
       state: present
@@ -70,7 +53,7 @@
 #      dns_domain_name: test.com
       vserver: "{{ item.vserver }}"
       <<: *login
-    with_items: "{{ lif }}"     
+    with_items: "{{ lif }}"
   - name: Start NFS
     na_ontap_nfs:
       state: present
@@ -115,4 +98,5 @@
       volume_security_style: "{{ item.security_style }}"
       wait_for_completion: true
       <<: *login
-    with_items: "{{ vols }}"  
+    with_items: "{{ vols }}"
+
