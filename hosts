@@ -4,15 +4,11 @@
 
 [servers]
 192.168.0.62 shortname=centos2
-192.168.0.61 shortname=centos
+192.168.0.61 shortname=centos1
 
 [nginx]
 192.168.0.61
 192.168.0.62
 
-[centos]
-192.168.0.61
-
-[centos2]
-192.168.0.62
-
+centos1 ansible-host=192.168.0.61
+centos2 ansible-host=192.168.0.62
