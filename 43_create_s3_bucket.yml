@@ -39,9 +39,8 @@
       state:            present
       name:             "{{ S3_Bucket }}"
       vserver:          "{{ PRI_SVM }}"
-      aggregates:       "n1_hdd_2"
+      aggregates:       "{{ PRI_AGGR }}"
       size:             102005473280
       comment:          Created with Ansible
       <<: *input
-
 
