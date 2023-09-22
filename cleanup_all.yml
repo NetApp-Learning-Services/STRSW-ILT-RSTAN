@@ -41,11 +41,11 @@
     - netapp.ontap
 
   tasks:
-    - name: Get Ontap Info
-      na_ontap_info:
-        state:
-        <<: *input
-      register: netapp
+#    - name: Get Ontap Info
+#      na_ontap_info:
+#        state:
+#        <<: *input
+#      register: netapp
    
     - name: Unmap LUN
       na_ontap_lun_map:
