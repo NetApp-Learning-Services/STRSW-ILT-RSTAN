@@ -14,18 +14,14 @@
 #               https://galaxy.ansible.com/netapp/ontap
 #
 # Built-in help:
-<<<<<<< HEAD
 # ansible-doc netapp.ontap.na_ontap_s3_buckets
-=======
-# ansible-doc netapp.ontap.na_ontap_svm
->>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741
 #
 ################################################################################
 
 - hosts: localhost
   gather_facts: false
   vars:
-    input: &variables
+    input: &input
       hostname:         "{{ PRI_CLU }}"
       username:         "{{ PRI_CLU_USER }}"
       password:         "{{ PRI_CLU_PASS }}"
@@ -46,6 +42,6 @@
       aggregates:       "{{ PRI_AGGR }}"
       size:             102005473280
       comment:          "Container for S3 objects"
-      <<: *variables
+      <<: *input
 
 
