@@ -1,0 +1,59 @@
+#!/usr/bin/env ansible-playbook
+
+################################################################################
+#
+# Title:        53_create_s3_service.yml
+# Author:       Vish Hulikal
+# Date:         2023-10-27
+# Description:  Create an S3 service
+#               with Ansible module
+# Procedure to get the certificate name:
+# 1. Go to System Manager -> Cluster -> Settings-> Certificates -> Client/Server Certificates
+# 2. Check the certificate for the nas_svm, which you just created by running the playbook
+#               51_create_pri_svm.yml
+# 3. Note it down: nas_svm_179219CA97BAD25E
+# After the playbook is executed, print the access_key and the secret_key for the s3 server.
+# Modules:      na_ontap_s3_services
+#
+# URLs:         http://docs.netapp.com/ontap-9/index.jsp
+#               https://galaxy.ansible.com/netapp/ontap
+#
+# Built-in help:
+# ansible-doc netapp.ontap.na_ontap_s3_services
+#
+################################################################################
+
+- hosts: localhost
+  gather_facts: false
+  vars:
+    input: &input
+      hostname:         "{{ PRI_CLU }}"
+      username:         "{{ PRI_CLU_USER }}"
+      password:         "{{ PRI_CLU_PASS }}"
+      https:            true
+      validate_certs:   false
+      use_rest:         Always
+  vars_files:
+    - global_nas.vars
+  collections:
+    - netapp.ontap
+
+  tasks:
+  - name: Create an s3 service on primary SVM
+    na_ontap_s3_services:
+      state:            present
+      name:             "s3_server"
+      vserver:          "{{ PRI_SVM }}"
+      comment:          enabled
+      enabled:          true
+      certificate_name: nas_svm_179219CA97BAD25E
+      <<: *input
+#    register: result
+#  - name: print variables
+#    ansible.builtin.debug:
+#      msg: Access Key {{ result.access_key }} and Secret Key {{ result.secret_key }}
+#  - name: check outcomes
+#    assert:
+#      that:
+#        - result.access_key
+#        - result.secret_key
