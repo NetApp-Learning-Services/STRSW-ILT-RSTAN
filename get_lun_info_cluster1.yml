@@ -33,6 +33,7 @@
   collections:
     - netapp.ontap
   tasks:
+<<<<<<< HEAD
   - name: gather info
 #    na_ontap_info:
     na_ontap_rest_info:
@@ -44,3 +45,15 @@
     register: ontap_info
   - debug:
      msg: "{{ ontap_info.ontap_info }}"
+=======
+#  - name: gather info
+#    na_ontap_info:
+#      state: info
+#      <<: *input
+#      gather_subset:
+#      - lun_info
+#      - igroup_info
+#    register: ontap_info
+#  - debug:
+#     msg: "{{ ontap_info.ontap_info }}"
+>>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741

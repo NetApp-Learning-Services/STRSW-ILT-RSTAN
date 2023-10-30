@@ -38,6 +38,7 @@
     - netapp.ontap
 
   tasks:
+<<<<<<< HEAD
 
     - name: Get Ontap Rest Info
       na_ontap_rest_info:
@@ -51,6 +52,14 @@
         <<: *input
       register: netapp1
 
+=======
+#    - name: Get Ontap Info
+#      na_ontap_info:
+#        state:
+#        <<: *input
+#      register: netapp
+   
+>>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741
     - name: Unmap LUN
       na_ontap_lun_map:
         state: absent

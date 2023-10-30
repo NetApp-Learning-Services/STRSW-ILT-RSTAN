@@ -2,7 +2,7 @@
 
 ################################################################################
 #
-# Title:        create_san_svm.yml 
+# Title:        create_san_svm.yml
 # Author:       Ronald Feist
 # Date:         2020-06-09
 # Description:  Create a primary SVM for SAN
@@ -42,3 +42,7 @@
 #      root_volume_aggregate: "{{ PRI_AGGR }}"
       comment:               Created with Ansible
       <<: *input
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741

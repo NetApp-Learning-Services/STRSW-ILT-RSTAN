@@ -14,7 +14,11 @@
 #               https://galaxy.ansible.com/netapp/ontap
 #
 # Built-in help:
+<<<<<<< HEAD
 # ansible-doc netapp.ontap.na_ontap_s3_buckets
+=======
+# ansible-doc netapp.ontap.na_ontap_svm
+>>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741
 #
 ################################################################################
 
