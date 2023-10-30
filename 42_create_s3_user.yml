@@ -14,7 +14,7 @@
 #               https://galaxy.ansible.com/netapp/ontap
 #
 # Built-in help:
-# ansible-doc netapp.ontap.na_ontap_svm
+# ansible-doc netapp.ontap.na_ontap_s3_users
 #
 ################################################################################
 

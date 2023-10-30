@@ -15,7 +15,7 @@ HEAD_APP="accept: application/hal+json"
 # SVMs
 API="https://$PRI_CLU/api/svm/svms?fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -k -s \
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing SVM details"
@@ -29,7 +29,7 @@ echo -e ""
 # Interfaces
 API="https://$PRI_CLU/api/network/ip/interfaces?scope=svm&fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -k -s \
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing network interface details"
@@ -43,7 +43,7 @@ echo -e ""
 # DNS
 API="https://$PRI_CLU/api/name-services/dns?fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -k -s \
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing DNS details"
@@ -57,7 +57,7 @@ echo ""
 # CIFS
 API="https://$PRI_CLU/api/protocols/cifs/services?fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -k -s \
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing CIFS details"
@@ -71,7 +71,7 @@ echo -e ""
 # NFS
 API="https://$PRI_CLU/api/protocols/nfs/services?fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -k  -s \
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing NFS details"
@@ -85,7 +85,7 @@ echo -e ""
 # iSCSI
 API="https://$PRI_CLU/api/protocols/san/iscsi/services?fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -k -s \
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing iSCSI details"

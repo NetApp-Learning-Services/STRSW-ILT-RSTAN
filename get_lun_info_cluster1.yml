@@ -34,7 +34,8 @@
     - netapp.ontap
   tasks:
   - name: gather info
-    na_ontap_info:
+#    na_ontap_info:
+    na_ontap_rest_info:
       state: info
       <<: *input
       gather_subset:

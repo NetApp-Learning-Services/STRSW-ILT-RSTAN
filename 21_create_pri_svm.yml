@@ -28,7 +28,7 @@
       https:          true
       validate_certs: false
 # root_volume_aggregate currently not supported with REST
-#      use_rest:       Always
+      use_rest:       Always
   vars_files:
     - global_nas.vars
   collections:
@@ -40,6 +40,20 @@
       state:                 present
       name:                  "{{ PRI_SVM }}"
 #      root_volume_aggregate: "{{ PRI_AGGR }}"
+#      allowed_protocols:
+#        - name: cifs
+#        - name: nfs
+#        - name: s3
+      services:
+        cifs:
+          allowed: true
+#          enabled: true
+        nfs:
+          allowed: true
+#          enabled: true
+#        s3:
+#          allowed: true
+#          enabled: true
       comment:               Created with Ansible
       <<: *input
 

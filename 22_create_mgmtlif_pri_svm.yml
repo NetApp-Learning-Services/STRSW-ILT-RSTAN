@@ -4,7 +4,7 @@
 #
 # Title:        22_create_mgmtlif_pri_svm.yml
 # Author:       Vish Hulikal
-# Date:         2020-06-12
+# Date:         2023-10-29
 # Description:  Create management interface on primary SVM for NAS
 #               with Ansible modules
 #
@@ -44,8 +44,6 @@
       home_node:             "{{ PRI_CLU_NODE1 }}"
       home_port:             "{{ PRI_MGMT_PORT }}"
       <<: *input
-# FIXME - service_policy added in later release of module collection (20.4.0)
-#      service_policy:        "default-management"
-# Therefore for now firewall_policy and role here:
+      service_policy:        "default-management"
       firewall_policy:       mgmt
       role:                  data

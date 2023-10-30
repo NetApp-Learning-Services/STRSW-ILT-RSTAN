@@ -38,6 +38,7 @@
     na_ontap_svm:
       state:            present
       name:             "{{ PRI_SVM }}"
+#      certificate:      "server"
       services:
         nfs:
           allowed:      true

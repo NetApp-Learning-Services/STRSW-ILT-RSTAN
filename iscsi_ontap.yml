@@ -19,6 +19,7 @@
     state: present
     https:          true
     validate_certs: false
+    use_rest: Always
   name: Create and Map a LUN
   tasks:
    - name: Create iGroup

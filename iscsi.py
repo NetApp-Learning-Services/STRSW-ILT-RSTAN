@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.11
 
 """
 ONTAP REST API Python Sample Scripts
@@ -19,6 +19,7 @@ import base64
 import argparse
 import logging
 import requests
+
 requests.packages.urllib3.disable_warnings()
 
 def get_size(vol_size):
@@ -311,5 +312,7 @@ if __name__ == "__main__":
         'accept': "application/json"
     }
 
+    # List all volumes in the VServer
+    #list_volumes(args.vserver_name)
     iscsi_setup(ARGS.cluster, headers)
     print("Script Complete")
