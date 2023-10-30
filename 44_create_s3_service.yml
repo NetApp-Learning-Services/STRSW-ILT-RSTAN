@@ -7,15 +7,12 @@
 # Date:         2023-09-14
 # Description:  Create an S3 service
 #               with Ansible module
-<<<<<<< HEAD
 # Procedure to get the certificate name:
 # 1. Go to System Manager -> Cluster -> Settings-> Certificates -> Client/Server Certificates
 # 2. Check the certificate for the nas_svm, which you just created by running the playbook
 #               41_create_pri_svm.yml
 # 3. Note it down: nas_svm_1791794040043EE
-=======
 #
->>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741
 # Modules:      na_ontap_svm
 #
 # URLs:         http://docs.netapp.com/ontap-9/index.jsp
@@ -45,19 +42,11 @@
   - name: Create an s3 service on primary SVM
     na_ontap_s3_services:
       state:            present
-<<<<<<< HEAD
       name:             "s3_server"
       vserver:          "{{ PRI_SVM }}"
       comment:          not enabled
       enabled:          false
       certificate_name: nas_svm_1791794040043EE3
-=======
-      name:             "s3_service"
-      vserver:          "{{ PRI_SVM }}"
-      comment:          not enabled
-      enabled:          false
-      certificate_name: nas_svm_17848CA68E834901
->>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741
       <<: *input
 
 
