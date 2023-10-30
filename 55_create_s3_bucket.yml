@@ -43,7 +43,3 @@
       size:             102005473280
       comment:          "Container for S3 objects"
       <<: *input
-<<<<<<< HEAD:55_create_s3_bucket.yml
-=======
-
->>>>>>> 8305b2dc2383c113a67225d2c499bb71659d5741:43_create_s3_bucket.yml
