@@ -1,5 +1,4 @@
 [ontap]
-192.168.0.101 shortname=cluster1
 192.168.0.102 shortname=cluster2
 
 [servers]
