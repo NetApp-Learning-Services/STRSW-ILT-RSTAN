@@ -47,9 +47,9 @@
     ansible.builtin.debug:
       msg: Access Key {{ result.access_key }} and Secret Key {{ result.secret_key }}
 
-  -name: Check the result
-   assert:
-     that:
-       - result.access_key
-       - result.secret_key
+  - name: Check the result
+    assert:
+      that:
+        - result.access_key
+        - result.secret_key
 
