@@ -6,6 +6,8 @@
 # Description:  Clean up the entire environment
 #               with Ansible modules
 #
+# Authors:      Ron Fiest and Vish Hulikal
+# Date:         11-06-2023
 # Modules:      na_ontap_rest_info
 #               na_ontap_volume
 #               na_ontap_cifs_server
@@ -61,11 +63,25 @@
         hostname: "{{ PRI_CLU }}"
         username: "{{ PRI_CLU_USER }}"
         password: "{{ PRI_CLU_PASS }}"
-#        validate_certs: false
+        validate_certs: false
         <<: *input
       with_items:
         "{{ luns }}"
       when: luns != None
+
+    - name: Delete interface
+      na_ontap_interface:
+        state: absent
+        interface_name: "{{ PRI_SVM }}_iscsi_01"
+        vserver: "{{ PRI_SVM }}"
+        <<: *input
+
+    - name: Delete interface
+      na_ontap_interface:
+        state: absent
+        interface_name: "{{ PRI_SVM }}_iscsi_02"
+        vserver: "{{ PRI_SVM }}"
+        <<: *input
 
     - name: Stop and Disable iSCSI
       na_ontap_iscsi:
