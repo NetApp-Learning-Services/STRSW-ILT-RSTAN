@@ -3,8 +3,8 @@
 ################################################################################
 #
 # Title:        vol_create_by_iops.yml
-# Author:       Adrian Bronder, Curtis Burchett Vish Hulikal
-# Date:         2022-02-24
+# Author:       Adrian Bronder and Vish Hulikal
+# Date:         2023-11-06
 # Description:  Create volume on aggregate with lowest IO utilization
 #               with Ansible modules
 #
@@ -75,15 +75,14 @@
   - name: Provision volume on selected aggregate
     na_ontap_volume:
       state:                 present
-      name:                  "{{ PRI_SVM }}_vol_{{ '%03d' | format(vol_counter|int) }}"
-      vserver:               "{{ PRI_SVM }}"
+      name:                  "{{ PRI_SVM2 }}_vol_{{ '%03d' | format(vol_counter|int) }}"
+      vserver:               "{{ PRI_SVM2 }}"
       size:                  "{{ VOL_SIZE }}"
       size_unit:             mb
       aggregate_name:        "{{ selected_aggr.name }}"
       comment:               Created with Ansible
       space_guarantee:       volume
       policy:                default
-      junction_path:         "/{{ PRI_SVM }}_vol_{{ '%03d' | format(vol_counter|int) }}"
+      junction_path:         "/{{ PRI_SVM2 }}_vol_{{ '%03d' | format(vol_counter|int) }}"
       volume_security_style: ntfs
       <<: *input
-
