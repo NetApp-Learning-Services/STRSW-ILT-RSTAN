@@ -14,7 +14,7 @@ HEAD_APP="accept: application/hal+json"
 ### Step 3 - Get & print details
 # SVMs
 API="https://$PRI_CLU/api/svm/svms?fields=*"
-echo -e "--> calling $API"
+kecho -e "--> calling $API"
 REST_RESPONSE=`curl -s \
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
@@ -29,7 +29,7 @@ echo -e ""
 # Interfaces
 API="https://$PRI_CLU/api/network/ip/interfaces?scope=svm&fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -s -k\
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing network interface details"
@@ -43,7 +43,7 @@ echo -e ""
 # iSCSI
 API="https://$PRI_CLU/api/protocols/san/iscsi/services?fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -s -k\
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing iSCSI details"
@@ -57,7 +57,7 @@ echo -e ""
 # LUN Maps
 API="https://$PRI_CLU/api/protocols/san/lun-maps?fields=*"
 echo -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -s -k\
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing LUN Map details"
