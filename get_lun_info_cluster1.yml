@@ -1,3 +1,4 @@
+---
 #!/usr/bin/env ansible-playbook
 
 ################################################################################
@@ -34,14 +35,14 @@
     - netapp.ontap
   tasks:
   - name: gather info
-#    na_ontap_info:
-    na_ontap_rest_info:
+    na_ontap_info:
+#    na_ontap_rest_info:
       state: info
       <<: *input
       gather_subset:
       - lun_info
       - igroup_info
     register: ontap_info
-  - debug:
-    msg: "{{ ontap_info.ontap_info }}"
-
+  - name: Print info
+    debug:
+     msg: "{{ ontap_info.ontap_info }}"
