@@ -15,7 +15,7 @@ HEAD_APP="accept: application/hal+json"
 # SVMs
 API="https://$PRI_CLU/api/svm/svms?fields=*"
 kecho -e "--> calling $API"
-REST_RESPONSE=`curl -s \
+REST_RESPONSE=`curl -s -k\
   -H "$HEAD_APP" -H "$HEAD_AUTH" -X GET "$API"`
 
 echo -e "--> Printing SVM details"
