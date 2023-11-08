@@ -4,7 +4,7 @@
 #
 # Title:        45_create_s3_bucket.yml
 # Author:       Vish Hulikal
-# Date:         2023-09-14
+# Date:         2023-11-08
 # Description:  Create a S3 bucket
 #               with Ansible module
 #
@@ -37,11 +37,9 @@
   - name: Create a S3 bucket
     na_ontap_s3_buckets:
       state:            present
-      name:             "s3-container"
+      name:             "s3-bucket"
       vserver:          "{{ PRI_SVM }}"
       aggregates:       "{{ PRI_AGGR }}"
       size:             102005473280
       comment:          "Container for S3 objects"
       <<: *input
-
-
