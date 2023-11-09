@@ -4,7 +4,7 @@
 #
 # Title:        46_create_s3_policy.yml
 # Author:       Vish Hulikal
-# Date:         2023-10-25
+# Date:         2023-11-08
 # Description:  Create an S3 Policy
 #               with Ansible module
 #
@@ -39,17 +39,17 @@
       state:            present
       name:             "{{ S3_Policy }}"
       vserver:          "{{ PRI_SVM }}"
-#      username:         "{{ S3_User }}"
+#      username:         "*"
+#      username:         "sm_s3_user"
       comment:          Created with Ansible
       statements:
         - sid: 1
           resources:
-          - "*"  #{{ S3_Bucket }}"
-#          - "/{{ S3_Bucket }}/*"
+          - "*"
+#          - "{{ S3-Bucket }}"
+#          - "/{{ S3-Bucket }}/*"
           actions:
             - "*"
           effect:
             allow
       <<: *input
-
-
