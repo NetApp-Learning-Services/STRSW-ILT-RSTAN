@@ -4,7 +4,7 @@
 #
 # Title:        55_create_s3_bucket.yml
 # Author:       Vish Hulikal
-# Date:         2023-09-14
+# Date:         2023-11-10
 # Description:  Create a S3 bucket
 #               with Ansible module
 #
@@ -41,5 +41,20 @@
       vserver:          "{{ PRI_SVM }}"
       aggregates:       "{{ PRI_AGGR }}"
       size:             102005473280
+      policy:
+        statements:
+          - sid: 1
+            resources:
+              - s3-container
+              - s3-container/*
+            actions:
+              - GetObject
+              - PutObject
+              - DeleteObject
+              - ListBucket
+            effect: allow
+            principals:
+              - S3_User
+              - sm_s3_user
       comment:          "Container for S3 objects"
       <<: *input
