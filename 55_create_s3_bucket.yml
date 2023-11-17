@@ -54,7 +54,7 @@
               - ListBucket
             effect: allow
             principals:
-              - S3_User
-              - sm_s3_user
-      comment:          "Container for S3 objects"
+              - "{{ S3_User }}"
+              - "sm_s3_user"
+      comment: "Container for S3 objects"
       <<: *input
