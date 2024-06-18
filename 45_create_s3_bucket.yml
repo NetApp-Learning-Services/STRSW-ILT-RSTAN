@@ -56,6 +56,6 @@
             effect: allow
             principals:
               - s3_user
-              - sm_s3_user
+#              - sm_s3_user
       comment:          "Container for S3 objects"
       <<: *input
