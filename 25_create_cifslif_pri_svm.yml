@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        25_create_cifslif_pri_svm.yml
-# Author:       Vish Hulikal
 # Date:         2020-06-20
 # Description:  Create CIFS interface on primary SVM for NAS
 #               with Ansible modules

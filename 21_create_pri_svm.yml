@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        21_create_pri_svm.yml 
-# Author:       Vish Hulikal
 # Date:         2020-06-12
 # Description:  Create a primary SVM for NAS
 #               with Ansible modules

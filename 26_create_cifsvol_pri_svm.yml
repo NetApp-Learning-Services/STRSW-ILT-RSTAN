@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        26_create_cifsvol_pri_svm.yml
-# Author:       Vish Hulikal
 # Date:         2020-06-20
 # Description:  Create volume on primary SVM for NAS
 #               with Ansible modules
