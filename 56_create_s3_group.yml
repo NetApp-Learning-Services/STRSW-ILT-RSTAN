@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        56_create_s3_group.yml
-# Author:       Vish Hulikal
 # Date:         2023-10-25
 # Description:  Create a S3 group
 #               with Ansible module

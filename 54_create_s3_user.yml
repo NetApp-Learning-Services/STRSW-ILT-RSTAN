@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        54_create_s3_user.yml
-# Author:       Vish Hulikal
 # Date:         2023-10-28
 # Description:  Create an S3 user
 #               with Ansible module

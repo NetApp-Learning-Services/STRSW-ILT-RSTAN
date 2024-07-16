@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        51_create_pri_svm.yml
-# Author:       Vish Hulikal
 # Date:         2023-10-27
 # Description:  Create a primary SVM for S3 Server
 #               with Ansible modules

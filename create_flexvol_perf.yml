@@ -3,7 +3,7 @@
 ################################################################################
 #
 # Title:        vol_create_by_iops.yml
-# Author:       Adrian Bronder and Vish Hulikal
+# Author:       Adrian Bronder
 # Date:         2023-11-06
 # Description:  Create volume on aggregate with lowest IO utilization
 #               with Ansible modules

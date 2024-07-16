@@ -6,7 +6,7 @@
 # Description:  Clean up the entire environment
 #               with Ansible modules
 #
-# Authors:      Ron Fiest and Vish Hulikal
+# Authors:      Ron Fiest
 # Date:         11-06-2023
 # Modules:      na_ontap_rest_info
 #               na_ontap_volume
