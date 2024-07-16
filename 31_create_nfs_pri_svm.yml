@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        31_create_nfs_pri_svm.yml
-# Author:       Vish Hulikal
 # Date:         2020-06-21
 # Description:  Create NFS server on primary SVM
 #               with Ansible modules

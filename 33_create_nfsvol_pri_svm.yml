@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        33_create_nfsvol_pri_svm.py
-# Author:       Vish Hulikal
 # Date:         2020-06-21
 # Description:  Create volume on primary SVM
 #               with Ansible modules

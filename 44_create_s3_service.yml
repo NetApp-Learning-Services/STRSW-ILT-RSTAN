@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        44_create_s3_service.yml
-# Author:       Vish Hulikal
 # Date:         2023-09-14
 # Description:  Create an S3 service
 #               with Ansible module

@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        36_create_route_pri_svm.yml
-# Author:       Vish Hulikal
 # Date:         2023-10-29
 # Description:  Create route on primary SVM for NAS
 #               with Ansible modules

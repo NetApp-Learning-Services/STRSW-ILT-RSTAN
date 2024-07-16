@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        35_create_export_policy_rule.yml
-# Author:       Vish Hulikal
 # Date:         2023-10-29
 # Description:  Create export policy rule for SVM
 #               with Ansible modules

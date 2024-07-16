@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        46_create_s3_policy.yml
-# Author:       Vish Hulikal
 # Date:         2023-11-08
 # Description:  Create an S3 Policy
 #               with Ansible module

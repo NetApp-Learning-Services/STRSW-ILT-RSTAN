@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        47_create_s3lif_pri_svm.yml
-# Author:       Vish Hulikal
 # Date:         2020-10-26
 #               Create a lif for the S3 SVM
 #               with Ansible modules

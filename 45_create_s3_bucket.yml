@@ -3,7 +3,6 @@
 ################################################################################
 #
 # Title:        45_create_s3_bucket.yml
-# Author:       Vish Hulikal
 # Date:         2023-11-09
 # Description:  Create a S3 bucket
 #               with a policy
